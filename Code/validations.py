@@ -179,7 +179,7 @@ def validar_campos_transacciones_visionamos(df):
 
     # CONDICIÓN 3:
     # Si el producto no se agrega, entonces es Ahorros
-    if 'PRODUCTO' not in df.columns:
+    if 'PRODUCTO' not in df.columns or df['PRODUCTO'].dropna().empty:
         df["PRODUCTO"] = "Ahorros"
 
     # CONDICIÓN 4:

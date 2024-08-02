@@ -138,7 +138,7 @@ def unir_archivos_resultantes():
                 return jsonify({'mensaje': f'Error al unir archivos: {str(e)}'}), 500
             
             # Nombre del archivo resultante
-            ruta = "T-Histórico (All).xlsx" if historico == "true" else f"T-{mes_seleccionado}{año_seleccionado} (All).xlsx"
+            ruta = "T-Histórico (Todos).xlsx" if historico == "true" else f"T-{mes_seleccionado}{año_seleccionado} (Todos).xlsx"
             
             # Guardar archivos y devolver las rutas de descarga
             try:
