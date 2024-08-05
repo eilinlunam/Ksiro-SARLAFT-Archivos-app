@@ -40,16 +40,13 @@ def validar_campos_clientes(df):
     df = df.drop_duplicates(subset='CEDULA', keep='first')
     
     # Validar campos opcionales
-    campos_opcionales = ['INGRESOS', 'EGRESOS', 'ACTIVOS', 'PASIVOS']
+    campos_opcionales = ['INGRESOS', 'EGRESOS', 'ACTIVOS', 'PASIVOS', 'CODIGO']
     for campo in campos_opcionales:
         if campo in df.columns and not pd.api.types.is_numeric_dtype(df[campo]):
             errores.append(f"{campo} debe ser numérico si está presente.")
         else:
             df[campo.capitalize()] = 0.0
-
-    # Agregando código = 0.0
-    df["Codigo"] = 0.0
-
+            
     return errores, df
 
 
