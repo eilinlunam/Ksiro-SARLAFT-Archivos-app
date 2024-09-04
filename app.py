@@ -3,6 +3,7 @@ from flask import Flask, request, jsonify, send_file
 from werkzeug.utils import secure_filename
 import pandas as pd
 import os
+from flask_cors import CORS
 
 # Importando código:
 from Code.utils import *
@@ -10,6 +11,7 @@ import Code.services as services
 
 # API FLASK
 app = Flask(__name__)
+CORS(app)
 
 # Configuración de la carpeta de subida
 CARPETA_ARCHIVOS = 'Uploads/'
@@ -24,7 +26,7 @@ def obtener_archivos_sarlaft():
     if request.method == 'POST':
         # Verificar si se reciben los archivos archivo1 y archivo2
         if 'archivo1' not in request.files or 'archivo2' not in request.files:
-            return jsonify({'mensaje': 'Debe subir ambos archivos.'}), 400
+            return jsonify({'mensaje': 'Debe subir ambos archivos.'})
         
         # Recibiendo parámetros
         archivo1 = request.files['archivo1']  # Clientes
@@ -40,11 +42,11 @@ def obtener_archivos_sarlaft():
         if año_seleccionado==None: año_seleccionado=""
 
         if not tipobd:
-            return jsonify({'mensaje': 'Debe seleccionar el tipo de bases de datos: OPA o VISIONAMOS'}), 400
+            return jsonify({'mensaje': 'Debe seleccionar el tipo de bases de datos: OPA o VISIONAMOS'})
 
         # Verificar si los archivos son válidos
         if archivo1.filename == '' or archivo2.filename == '':
-            return jsonify({'mensaje': 'Debe subir ambos archivos: CLIENTES y TRANSACCIONES'}), 400
+            return jsonify({'mensaje': 'Debe subir ambos archivos: CLIENTES y TRANSACCIONES'})
         
         # Si los archivos cumplen con las extensión permitida: .xlsx
         if archivo1 and archivo_permitido(archivo1.filename) and archivo2 and archivo_permitido(archivo2.filename):
@@ -67,11 +69,11 @@ def obtener_archivos_sarlaft():
             try:
                 df_clientes, df_transacciones = services.modificar_archivos(ruta_archivo1, ruta_archivo2, tipobd)
             except Exception as e:
-                return jsonify({'mensaje': f'Error en la modificación de archivos: {str(e)}'}), 500
+                return jsonify({'mensaje': f'Error en la modificación de archivos: {str(e)}'})
             
             # Verificar si hay errores en la modificación de archivos
             if isinstance(df_clientes, str):
-                return jsonify({'mensaje': df_transacciones}), 400
+                return jsonify({'mensaje': df_transacciones})
             
             # Nombres de archivos resultantes
             if historico == "true":
@@ -88,7 +90,7 @@ def obtener_archivos_sarlaft():
                 else:
                     return guardar_excel(df_transacciones, ruta_transacciones, "Transacciones")
             except Exception as e:
-                return jsonify({'mensaje': f'Error al guardar archivos: {str(e)}'}), 500
+                return jsonify({'mensaje': f'Error al guardar archivos: {str(e)}'})
             
 
 # Ruta para unir archivos
@@ -98,7 +100,7 @@ def unir_archivos_resultantes():
         
         # Verificar si se reciben los archivos archivo1 y archivo2
         if 'archivo_visionamos' not in request.files or 'archivo_opa' not in request.files:
-            return jsonify({'mensaje': 'Debe subir ambos archivos.'}), 400
+            return jsonify({'mensaje': 'Debe subir ambos archivos.'})
         
         archivo1 = request.files['archivo_visionamos']  # Visionamos
         archivo2 = request.files['archivo_opa']  # Visionamos
@@ -111,7 +113,7 @@ def unir_archivos_resultantes():
         if año_seleccionado==None: año_seleccionado=""
 
         if archivo1.filename == '' or archivo2.filename == '':
-            return jsonify({'mensaje': 'Debe subir ambos archivos.'}), 400
+            return jsonify({'mensaje': 'Debe subir ambos archivos.'})
         
         if archivo1 and archivo_permitido(archivo1.filename) and archivo2 and archivo_permitido(archivo2.filename):
             vaciar_carpeta(app.config['CARPETA_ARCHIVOS'])
@@ -135,7 +137,7 @@ def unir_archivos_resultantes():
                 df = pd.concat([df1, df2])
                 df = df.sort_values(by=["CEDULA", "Fecha"])
             except Exception as e:
-                return jsonify({'mensaje': f'Error al unir archivos: {str(e)}'}), 500
+                return jsonify({'mensaje': f'Error al unir archivos: {str(e)}'})
             
             # Nombre del archivo resultante
             ruta = "T-Histórico (Todos).xlsx" if historico == "true" else f"T-{mes_seleccionado}{año_seleccionado} (Todos).xlsx"
@@ -144,7 +146,7 @@ def unir_archivos_resultantes():
             try:
                 return guardar_excel(df, ruta, "Transacciones")
             except Exception as e:
-                return jsonify({'mensaje': f'Error al guardar archivo: {str(e)}'}), 500
+                return jsonify({'mensaje': f'Error al guardar archivo: {str(e)}'})
 
 def guardar_excel(df, filename, sheetname):
     columnas_pesos = ["Ingresos", "Egresos", "Activos", "Pasivos", "SUMA_DEBITO", "SUMA_CREDITO"]
