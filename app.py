@@ -134,8 +134,11 @@ def unir_archivos_resultantes():
                 df = pd.concat([df1, df2])
                 df1["BD"] = "VISIONAMOS"
                 df2["BD"] = "OPA"
-                df = pd.concat([df1, df2])
-                df = df.sort_values(by=["CEDULA", "Fecha"])
+                df = pd.concat([df1, df2])   
+                if 'Fecha' in df.columns:
+                    df = df.sort_values(by=["CEDULA", "Fecha"])
+                else:
+                    df = df.sort_values(by=["CEDULA", "FECHA"])
             except Exception as e:
                 return jsonify({'mensaje': f'Error al unir archivos: {str(e)}'})
             
