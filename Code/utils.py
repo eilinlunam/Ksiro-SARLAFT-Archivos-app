@@ -25,12 +25,11 @@ def vaciar_carpeta(ruta_carpeta):
 
 def mapear_operacion(operacion):
     operacion = operacion.upper()  # Convertir a mayúsculas
-    if operacion in ['CREDITO', 'CNGC', 'C']:
+    if operacion=='CREDITO' or operacion=='CNGC' or operacion=='C':
         return 'CREDITO'
-    elif operacion in ['DEBITO', 'RETC', 'R']:
+    elif operacion=='DEBITO' or operacion=='RETC' or operacion=='R':
         return 'DEBITO'
     else:
-        print(operacion)
         return operacion  # Mantener el valor original si no coincide con ninguna categoría
     
 def convertir_fecha(df, errores, campos):
